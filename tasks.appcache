@@ -1,0 +1,26 @@
+CACHE MANIFEST
+todo.html
+css/bootstrap.min.css
+css/notebook.css
+css/style.css
+css/tasks.css
+datepicker/css/bootstrap-datepicker.min.css
+datepicker/js/bootstrap-datepicker.min.js
+fancybox/source/jquery.fancybox.css
+
+js/jquery-2.1.3.min.js
+js/bootstrap.min.js
+js/jquery-tmpl.js
+js/jquery.validate.js
+js/date.js
+datepicker/js/bootstrap-datepicker.min.js
+fancybox/source/jquery.fancybox.pack.js
+js/jquery-serialization.js
+js/todoController.js
+js/webstorage.js
+misc/images/overlay.png
+fonts/glyphicons-halflings-regular.eot
+fonts/glyphicons-halflings-regular.svg
+fonts/glyphicons-halflings-regular.ttf
+fonts/glyphicons-halflings-regular.woff
+fonts/glyphicons-halflings-regular.woff2

@@ -1,0 +1,6 @@
+.main { background-color: #f5f5f5; width: 100%; margin: 0 auto; padding: 0; }
+.list { color: #555; font-size: 1.2em; font-family: courier, monospace; border: 1px solid #dedede; }
+.list tr { text-transform: capitalize; }
+.list tr:hover { background-color: #f0f0f0; -webkit-transition: all 0.2s; -moz-transition: all 0.2s; -ms-transition: all 0.2s; -o-transition: all 0.2s; }
+.rightBorder { border-right: 2px solid #ffaa9f; }
+tfoot {background-color: #f8f8f8;}

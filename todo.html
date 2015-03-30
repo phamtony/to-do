@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>To-Do App</title>
+	
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/notebook.css" />
+	<link rel="stylesheet" type="text/css" href="datepicker/css/bootstrap-datepicker.min.css" />
+	<link rel="stylesheet" href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+
+	<!-- 3rd-Party library -->
+	<script src="js/jquery-2.1.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery-tmpl.js"></script>
+	<script src="js/jquery.validate.js"></script>
+	<script src="js/date.js"></script>
+	<script src="datepicker/js/bootstrap-datepicker.min.js"></script>
+	<script type="text/javascript" src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  <script src="js/googleApi.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=false&libraries=places"></script> 	
+
+	<!-- Custom JavaScript -->
+	<script src="js/jquery-serialization.js"></script>
+	<script src="js/todoController.js"></script>
+
+</head>
+
+<body>
+	<!-- Main core of the app -->
+	<main id="todoPage">
+
+    <div class="overlay none" id="maps">
+      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+      <div id="map-canvas"></div>
+    </div> 	
+		
+		<!-- Creates new Todo list, opens up the modal -->
+		<!-- This would be in a lightbox modal -->
+		<section class="overlay none" id="create">
+			<div class="todoBox">
+			<a class="btn-close" href="javascript:void(0)" title="Close Window">X</a>
+				<div class="lb-content">
+					<form id="todoForm">
+		        <input type="hidden" name="id" />
+						<div>
+							<label>Task</label> 
+							<input type="text" required="required" maxlength="40" name="task" class="taskField large" placeholder="CS701 Term Project" />
+						</div>
+						
+						<div>
+							<label>Due</label> 
+							<input class="datepicker" data-provide="datepicker" required="required" name="requiredBy"/>
+						</div>
+
+						<div>
+							<label>Notes (optional)</label>
+							<textarea row="400" cols="55" name="notes" class="noteField large" placeholder="Notes here" /></textarea>							
+						</div>
+
+						<nav>
+							<!-- Add task -->
+							<button id="save" type="button" class="btn btn-default btn-xs">
+							  <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span> Save
+							</button>
+							<!-- Clear inputs -->
+							<button id="clear" type="button" class="btn btn-default btn-xs">
+							  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Clear
+							</button>	
+							<!-- cancel changes -->
+							<button id="cancel" type="button" class="btn btn-default btn-xs">
+							  <span class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></span> Cancel
+							</button>
+							<!-- Location checkbox -->																
+							<div>
+								<input id="location" type="checkbox">
+							  <label class="location">Location Search?</label>								
+							</div>
+
+							<div>
+								<input type="text" name="location" class="locationField" placeholder="Location Here">
+							</div>  
+						</nav>
+					</form>
+				</div>
+			</div>	
+		</section>
+
+		<!-- Mark-up for the template  -->
+		<section class="main">
+			<table id="tblTodos" class="table">
+
+				<colgroup>
+					<col width="7%">
+					<col width="55%">
+					<col width="38%">
+				</colgroup>
+
+				<thead class="firstHeader">
+					<tr>
+						<td class="rightBorder"></td>
+						<td><h1>To-Do App</h1><h5>(Get Things Done)</h5></td>
+						<td class="right">
+								<button id="btnAdd" type="button" class="btn btn-default btn-lg">
+								  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+								</button>
+								<button id="btnClear" type="button" class="btn btn-default btn-lg">
+								  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Clear
+								</button>																																
+						</td>
+					</tr>
+				</thead>
+
+				<tbody class="list">
+				</tbody>
+
+				<tfoot>
+					<tr>
+						<td class="rightBorder"></td>
+						<td style="padding: 30px; text-align: center; vertical-align: middle;">
+							<p class="footFont">To-Do App</p>
+						<td style="text-align: center; vertical-align: middle;"><p class="footFont">Author: Tony Pham</p></td>
+					</tr>
+				</tfoot>	
+
+			</table>
+
+		</section>
+
+	</main>
+
+</body>
+
+<!-- JavaScript to initialize the app -->
+<script>
+	//Loads up all the list of todos if there is any in local storage. 
+	function initApp() {
+		$(document).ready(function() {
+			todoController.init($('#todoPage'), function() {
+				todoController.loadList();
+				$(".fancybox").fancybox();			
+			});
+		});
+	}
+
+	// This app only works with local storage
+	if (window.localStorage) {
+		$.getScript('js/webstorage.js').done(function(script, status) {
+			initApp();
+		}).fail(function(jqxhr, settings, exception) {
+			console.log('Failed to load the webstorage javascript');
+		});
+	}
+</script>
+
+<script id="todoRow" type="text/x-jQuery-tmpl">
+<tr>
+	<td class="rightBorder" style="text-align: center; vertical-align: middle;">
+	<input {{if complete == true}} checked="checked" {{/if}} type="checkbox" class="completeRow" data-task-id="${id}">
+	</td>
+	<td class="localSearch {{if complete == true}} taskCompleted {{/if}}"><a href="#" class="link" data-task-id="${id}">${task}</a></td>
+	<td {{if complete == true}} class="taskCompleted" {{/if}}><time datetime="${requiredBy}"> ${requiredBy}</time>
+		<nav>
+			{{if complete != true}}
+				<button type="button" class="btn btn-default btn-xs editRow" data-task-id="${id}">
+				  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit
+				</button>				
+			{{/if}}	
+				<button type="button" class="btn btn-default btn-xs deleteRow" data-task-id="${id}">
+				  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete
+				</button>					
+			{{if complete == true}}
+				<button type="button" class="btn btn-default btn-xs undoRow" data-task-id="${id}">
+				  <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Undo
+				</button>					
+			{{/if}}		
+		</nav>
+
+		<div class="overlay note none" id="${id}" data-task-id="${id}">
+			<div class="noteBox">
+				<div class="note-content">
+					<p>${notes}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="none locationName">
+			<p>${location}</p>
+		</div>		
+
+	</td>
+</tr>
+</script>
+
+<script>
+  google.maps.event.addDomListener(window, 'load', loadMap);
+</script> 
+
+</html>
